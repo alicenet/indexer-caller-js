@@ -8,7 +8,6 @@ const axios = require('axios').default;
  */
 class IndexerAxiosHandler {
 
-
     /**
     * @typedef ResponseError
     * @property {String} error - Error message
@@ -85,7 +84,7 @@ class IndexerAxiosHandler {
      * @returns {any} - Data response from endpoint (response.data)  
      */
     async get(endpoint, parameters = []) {
-        // Format Endpoint and apply get paramters if applicable
+        // Format Endpoint and apply get parameters if applicable
         let targetEndpoint = this._applyGetParamsToEndpoint(this._formatEndpoint(endpoint), parameters);
         try {
             return await (await axios.get(targetEndpoint)).data;
