@@ -2,8 +2,9 @@ const assert = require('assert');
 const IdxCaller = require('../index.js');
 
 let idxCaller; // idxCaller to be instanced here
-let testIdxEndpoint = "https://index-frontend-sg4efdgo3q-uc.a.run.app/";
-let testAddress = "0xc113189ad606c8dd46a783a7915483d7e9461c9a"
+const testIdxEndpoint = "https://index-frontend-sg4efdgo3q-uc.a.run.app/";
+const testAddress = "0xc113189ad606c8dd46a783a7915483d7e9461c9a"
+const blockId = 53000;
 
 describe('IdxCaller', function () {
 
@@ -22,12 +23,12 @@ describe('IdxCaller', function () {
         });
 
         it('Should show expected class state when instanced w/ config object w/out version', function () {
-            let idxCallerObj1 = new IdxCaller({ indexerURL: testIdxEndpoint });
+            const idxCallerObj1 = new IdxCaller({ indexerURL: testIdxEndpoint });
             checkIdxClassState(idxCallerObj1);
         });
 
         it('Should show expected class state when instanced w/ config object w/ version', function () {
-            let idxCallerObj2 = new IdxCaller({ indexerURL: testIdxEndpoint, indexerVersion: 2 });
+            const idxCallerObj2 = new IdxCaller({ indexerURL: testIdxEndpoint, indexerVersion: 2 });
             checkIdxClassState(idxCallerObj2, "/v2");
         });
 
@@ -48,80 +49,87 @@ describe('IdxCaller', function () {
         };
 
         it("Should be able to get current block height", async () => {
-            let currentBlockHeight = await idxCaller.getCurrentBlockHeight();
+            const currentBlockHeight = await idxCaller.getCurrentBlockHeight();
             assert.equal("number", typeof currentBlockHeight);
-        })
+        });
         
         it("Should be to get list of block heights without limit or offset", async () => {
-            let blocks = await idxCaller.getBlockHeights();
+            const blocks = await idxCaller.getBlockHeights();
             assert.equal(blocks.length > 0, true);
         });
 
         let firstBlockHeight;
 
         it("Should be able to get list of block heights with just limit", async () => {
-            let blocks = await idxCaller.getBlockHeights(1);
+            const blocks = await idxCaller.getBlockHeights(1);
             assert.equal(blocks.length, 1);
-            firstBlockHeight = blocks[0]
+            firstBlockHeight = blocks[0];
         });
 
         it("Should be able to get list of block heights with just offset", async () => {
-            let blocks = await idxCaller.getBlockHeights(false, 1);
+            const blocks = await idxCaller.getBlockHeights(false, 1);
             assert.equal(blocks.length > 0, true);
             assert.notEqual(blocks[0], firstBlockHeight);
         });
 
         it("Should be able to get list of block heights with both limit and offset", async () => {
-            let blocks = await idxCaller.getBlockHeights(10, 1);
+            const blocks = await idxCaller.getBlockHeights(10, 1);
             assert.equal(blocks.length > 0, true);
             assert.equal(blocks.length, 10);
         });
         
         it("Should be able to to get current block", async () => {
-            let currentBlock = await idxCaller.getCurrentBlock();
+            const currentBlock = await idxCaller.getCurrentBlock();
             checkBlockObject(currentBlock);
         });
 
         it("Should be able to to get a block by number", async () => {
-            let polledBlock = await idxCaller.getBlock(53000);
-            checkBlockObject(polledBlock)
+            const polledBlock = await idxCaller.getBlock(blockId);
+            checkBlockObject(polledBlock);
         });
 
     })
-
-    
 
 });
 
 describe("Transaction Methods", function() {
     it("Should be able to get latest transactions", async () => {
-        let latestTxs = await idxCaller.getTransactions();
+        const latestTxs = await idxCaller.getTransactions();
         assert(latestTxs.length > 0, true);
     });
 
-    // TBD below, not implemented yet
     it("Should be able to get latest transactions for specific address", async () => {
-
+        const latestTxs = await idxCaller.getTransactionsForAddress(testAddress);
+        assert(latestTxs.length > 0, true);
     });
 
     it("Should be able to get latest transactions for current block", async () => {
-        // method needs written -- use blocks.transactions
+        const currentBlock = await idxCaller.getCurrentBlock();
+        currentBlock.transactionHashes.forEach(async hash => {
+            const tx = await idxCaller.getTransactionByHash(hash);
+            assert(Boolean(tx?.transaction), true);
+        });
     });
 
     it("Should be able to get transactions from a specific block", async () => {
-        // method needs written -- use blocks.transactions
+        const polledBlock = await idxCaller.getBlock(blockId);
+        polledBlock.transactionHashes.forEach(async hash => {
+            const tx = await idxCaller.getTransactionByHash(hash);
+            assert(Boolean(tx?.transaction), true);
+        });
     });
 });
 
 describe("Datastore Methods", function() {
 
-    // TBD below, not implemented yet
     it("Should be able to get datastores for an address", async () => {
-
+        const datastores = await idxCaller.getDataStoresForAddress(testAddress);
+        assert(datastores.length > 0, true);
     });
-
+    
     it("Should be able to get datastore by index for an address", async () => {
-        
+        const datastores = await idxCaller.getDataStoresForAddressAndIndex(testAddress, "1");
+        assert(datastores.length > 0, true);
     })
 
 });

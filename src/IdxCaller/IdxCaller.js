@@ -168,6 +168,16 @@ class IdxCaller {
     }
 
     /**
+     * Fetches data stores for the provided address and index
+     * @method
+     * @param {String} address - The address to get data stores for 
+     * @param {String} index - The index to get data stores for 
+     */
+     async getDataStoresForAddressAndIndex(address, index) {
+        return await this.axiosHandler.get('/addresses/' + address + '/stores/' + index);
+    }
+
+    /**
      * Get transactions from the indexer, ambiguous of any addresses
      * @method
      * @param { Number | Boolean } limit - Limit of transactions to fetch -- provide false for no limit
@@ -191,7 +201,7 @@ class IdxCaller {
     async getTransactionByHash(txHash) {
         this._paramCheck("string", "txHash", txHash, true);
         let res = await this.axiosHandler.get('/transactions/' + txHash);
-        console.log(res);
+        return res;
     }
 
     /**
