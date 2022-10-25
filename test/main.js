@@ -5,6 +5,8 @@ let idxCaller; // idxCaller to be instanced here
 const testIdxEndpoint = "https://index-frontend-sg4efdgo3q-uc.a.run.app/";
 const testAddress = "0xc113189ad606c8dd46a783a7915483d7e9461c9a"
 const blockId = 53000;
+const indexerURL = "https://index-frontend-sg4efdgo3q-uc.a.run.app";
+const endpointBaseURL = "https://index-frontend-sg4efdgo3q-uc.a.run.app";
 
 describe('IdxCaller', function () {
 
@@ -13,8 +15,8 @@ describe('IdxCaller', function () {
         const checkIdxClassState = (classInstance, versionToCheck = "/v1") => {
             assert.equal(classInstance.defaultIndexerVersion, '/v1');
             assert.equal(classInstance.indexerVersion, versionToCheck);
-            assert.equal(classInstance.indexerUrl, 'https://index-frontend-sg4efdgo3q-uc.a.run.app');
-            assert.equal(classInstance.axiosHandler.endpointBaseURL, "https://index-frontend-sg4efdgo3q-uc.a.run.app" + versionToCheck);
+            assert.equal(classInstance.indexerUrl, indexerURL);
+            assert.equal(classInstance.axiosHandler.endpointBaseURL, endpointBaseURL + versionToCheck);
         }
 
         it('Should show expected class state when instanced w/ shorthand method', function () {
