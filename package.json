@@ -4,7 +4,8 @@
   "description": "A helper library to call an AliceNet indexer for commonly required data points",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -19,5 +20,9 @@
   "dependencies": {
     "axios": "^0.27.2",
     "mocha": "^10.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.26.0",
+    "husky": "^8.0.1"
   }
 }
