@@ -1,28 +1,33 @@
 {
-  "name": "indexer-caller-js",
-  "version": "1.0.0",
-  "description": "A helper library to call an AliceNet indexer for commonly required data points",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha",
-    "prepare": "husky install"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alicenet/indexer-caller-js.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/alicenet/indexer-caller-js/issues"
-  },
-  "homepage": "https://github.com/alicenet/indexer-caller-js#readme",
-  "dependencies": {
-    "axios": "^0.27.2",
-    "mocha": "^10.0.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.26.0",
-    "husky": "^8.0.1"
-  }
+    "name": "indexer-caller-js",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "A helper library to call an AliceNet indexer for commonly required data points",
+    "main": "lib/index.js",
+    "scripts": {
+        "test": "mocha",
+        "prepare": "husky install",
+        "build": "babel src -d lib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alicenet/indexer-caller-js.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/alicenet/indexer-caller-js/issues"
+    },
+    "homepage": "https://github.com/alicenet/indexer-caller-js#readme",
+    "dependencies": {
+        "axios": "^0.27.2",
+        "mocha": "^10.0.0"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.19.3",
+        "@babel/core": "^7.19.6",
+        "@babel/preset-env": "^7.19.4",
+        "eslint": "^8.26.0",
+        "husky": "^8.0.1"
+    }
 }
