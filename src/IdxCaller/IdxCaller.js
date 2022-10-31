@@ -246,4 +246,14 @@ export default class IdxCaller {
         );
         return res.error ? res : res.transactionHashes;
     }
+
+    /**
+     * Fetches data stores for the provided address and index
+     * @method
+     * @param {String} address - The address to get data stores for 
+     * @param {String} index - The index to get data stores for 
+     */
+        async getDataStoresForAddressAndIndex(address, index) {
+        return await this.axiosHandler.get('/addresses/' + address + '/stores/' + index);
+    }
 }
