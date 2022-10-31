@@ -28,6 +28,13 @@
         "@babel/core": "^7.19.6",
         "@babel/preset-env": "^7.19.4",
         "eslint": "^8.26.0",
-        "husky": "^8.0.1"
+        "husky": "^8.0.1",
+        "prettier": "2.7.1"
+    },
+    "lint-staged": {
+        "*.js": [
+            "prettier --write",
+            "eslint --cache --fix"
+        ]
     }
 }
