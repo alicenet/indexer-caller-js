@@ -1,6 +1,5 @@
-const IndexerAxiosHandler = require("../AxiosHandler/AxiosHandler");
-const AxiosHandler = require("../AxiosHandler/AxiosHandler");
-const { removeTrailingSlash } = require("../util/string");
+import AxiosHandler from "../AxiosHandler/AxiosHandler.js";
+import { removeTrailingSlash } from "../util/string.js";
 
 /**
  * Index Caller is responsible for calling common end points on the AliceNet Indexer
@@ -8,8 +7,7 @@ const { removeTrailingSlash } = require("../util/string");
  * eg getCurrentBlockHeight Success = 201, but a failure equals {error: "MSG"}
  * @class
  */
-class IdxCaller {
-
+export default class IdxCaller {
     /**
      * @typedef ConfigObject - Configuration object for IdxCaller
      * @property {String} indexerURL - The indexer URL
@@ -23,7 +21,7 @@ class IdxCaller {
     /**
      * @typedef BlockData - BlockData returned from the Indexer
      * @property {Number} chainId - The chain id of the chain the block belongs to
-     * @property {Number} height - The block height / number of the block 
+     * @property {Number} height - The block height / number of the block
      * @property {String} transactionCount - The amount of transactions in the block
      * @property {String} previousBlockHash - The previous block height's block hash
      * @property {String} transactionRootHash - The transaction root hash of the block
@@ -34,14 +32,16 @@ class IdxCaller {
      */
 
     /**
-     * @param {ConfigObject | String} configObjectOrIndexerURL - Config Object or Quick Init with IndexerURL 
+     * @param {ConfigObject | String} configObjectOrIndexerURL - Config Object or Quick Init with IndexerURL
      * @property configObjectOrIndexerURL.indexerURL - Indexer URL
      * @property configObjectOrIndexerURL.indexerVersion - Indexer version to use
      * @returns {null}
      */
     constructor(configObjectOrIndexerURL) {
         if (!configObjectOrIndexerURL) {
-            throw new Error("A configuration object or the indexerURL must be passed to the constructor of IdxCaller");
+            throw new Error(
+                "A configuration object or the indexerURL must be passed to the constructor of IdxCaller"
+            );
         }
         this.axiosHandler;
         this.indexerUrl;
@@ -53,12 +53,12 @@ class IdxCaller {
     /**
      * Initializes the idx color by configuration object, or by shorthand instancing via the indexerURL
      * - Note that when using shorthand instancing the default indexer version will be used
-     * @param {*} configObjectOrIndexerURL 
+     * @param {*} configObjectOrIndexerURL
      * @returns {null}
      */
     _init(configObjectOrIndexerURL) {
         // Quick Init
-        if (typeof configObjectOrIndexerURL === 'string') {
+        if (typeof configObjectOrIndexerURL === "string") {
             this.indexerUrl = removeTrailingSlash(configObjectOrIndexerURL);
             this.indexerVersion = this.defaultIndexerVersion;
         }
@@ -67,18 +67,29 @@ class IdxCaller {
             const configObj = configObjectOrIndexerURL;
 
             // Verify and set indexerUrl
-            if (!configObj.indexerURL || typeof configObj.indexerURL !== "string") {
+            if (
+                !configObj.indexerURL ||
+                typeof configObj.indexerURL !== "string"
+            ) {
                 throw new Error("indexerURL must exist and must be a string");
             }
             this.indexerUrl = removeTrailingSlash(configObj.indexerURL);
 
             // Verify and set index or version
-            if (configObj.indexerVersion && typeof configObj.indexerVersion !== "number") {
+            if (
+                configObj.indexerVersion &&
+                typeof configObj.indexerVersion !== "number"
+            ) {
                 throw new Error("indexerVersion must be a number");
             }
-            this.indexerVersion = configObj.indexerVersion ? "/v" + String(configObj.indexerVersion) : this.defaultIndexerVersion;
+            this.indexerVersion = configObj.indexerVersion
+                ? "/v" + String(configObj.indexerVersion)
+                : this.defaultIndexerVersion;
         }
-        this.axiosHandler = new AxiosHandler(this.indexerUrl, this.indexerVersion);
+        this.axiosHandler = new AxiosHandler(
+            this.indexerUrl,
+            this.indexerVersion
+        );
     }
 
     /**
@@ -86,14 +97,21 @@ class IdxCaller {
      * Note that this method allows parameters to be undefined unless required is marked as true
      * @param {String} typeAsString - Javascript type as string
      * @param {String} parameterName - The name of the parameter
-     * @param {any} parameter - The parameter to check 
+     * @param {any} parameter - The parameter to check
      * @returns {null}
      */
     _paramCheck(typeAsString, parameterName, parameter, required = false) {
         // Allow undefined for non-provided params
-        if (typeof parameter === 'undefined' || typeof parameter === 'boolean' && !required) { return }
+        if (
+            typeof parameter === "undefined" ||
+            (typeof parameter === "boolean" && !required)
+        ) {
+            return;
+        }
         if (typeof parameter !== typeAsString.toLowerCase()) {
-            throw new Error(`${parameterName}'s type (${typeof parameter}) does not match expected type ${typeAsString}'`);
+            throw new Error(
+                `${parameterName}'s type (${typeof parameter}) does not match expected type ${typeAsString}'`
+            );
         }
     }
 
@@ -104,14 +122,16 @@ class IdxCaller {
      * @returns {String} - The balance for the provided address
      */
     async getBalanceForAddress(address) {
-        let res = await this.axiosHandler.get('/addresses/' + address + '/balance');
+        let res = await this.axiosHandler.get(
+            "/addresses/" + address + "/balance"
+        );
         return res.error ? res : res.balance;
     }
 
     /**
      * Fetches a block by block height
      * @method
-     * @param {Number} blockHeight 
+     * @param {Number} blockHeight
      * @returns {BlockData} - The block object containing all block data
      */
     async getBlock(blockHeight) {
@@ -130,8 +150,11 @@ class IdxCaller {
     async getBlockHeights(limit, offset) {
         this._paramCheck("number", "limit", limit);
         this._paramCheck("number", "offset", offset);
-        let params = this.axiosHandler._generateGetParams(["limit", "offset"], [limit ? limit : null, offset]);
-        let res = await this.axiosHandler.get('/blocks', params);
+        let params = this.axiosHandler._generateGetParams(
+            ["limit", "offset"],
+            [limit ? limit : null, offset]
+        );
+        let res = await this.axiosHandler.get("/blocks", params);
         return res.error ? res : res.heights;
     }
 
@@ -142,7 +165,9 @@ class IdxCaller {
      */
     async getCurrentBlock() {
         let currentBlockHeight = await this.getCurrentBlockHeight();
-        if (currentBlockHeight.error) { return currentBlockHeight }
+        if (currentBlockHeight.error) {
+            return currentBlockHeight;
+        }
         let res = await this.getBlock(currentBlockHeight);
         return res.error ? res : res;
     }
@@ -154,17 +179,20 @@ class IdxCaller {
      */
     async getCurrentBlockHeight() {
         let currentHeight = await this.getBlockHeights(1);
-        if (currentHeight.error) { return currentHeight }
-        else { return currentHeight[0] }
+        if (currentHeight.error) {
+            return currentHeight;
+        } else {
+            return currentHeight[0];
+        }
     }
 
     /**
      * Fetches data stores for the provided address
      * @method
-     * @param {String} address - The address to get data stores for 
+     * @param {String} address - The address to get data stores for
      */
     async getDataStoresForAddress(address) {
-        return await this.axiosHandler.get('/addresses/' + address + '/stores');
+        return await this.axiosHandler.get("/addresses/" + address + "/stores");
     }
 
     /**
@@ -177,8 +205,11 @@ class IdxCaller {
     async getTransactions(limit, offset) {
         this._paramCheck("number", "limit", limit);
         this._paramCheck("number", "offset", offset);
-        let params = this.axiosHandler._generateGetParams(["limit", "offset"], [limit ? limit : null, offset]);
-        let res = await this.axiosHandler.get('/transactions', params);
+        let params = this.axiosHandler._generateGetParams(
+            ["limit", "offset"],
+            [limit ? limit : null, offset]
+        );
+        let res = await this.axiosHandler.get("/transactions", params);
         return res.error ? res : res.transactionHashes;
     }
 
@@ -190,7 +221,7 @@ class IdxCaller {
      */
     async getTransactionByHash(txHash) {
         this._paramCheck("string", "txHash", txHash, true);
-        let res = await this.axiosHandler.get('/transactions/' + txHash);
+        let res = await this.axiosHandler.get("/transactions/" + txHash);
         console.log(res);
     }
 
@@ -205,11 +236,14 @@ class IdxCaller {
     async getTransactionsForAddress(address, limit, offset) {
         this._paramCheck("number", "limit", limit);
         this._paramCheck("number", "offset", offset);
-        let params = this.axiosHandler._generateGetParams(["limit", "offset"], [limit ? limit : null, offset]);
-        let res = await this.axiosHandler.get('/addresses/' + address + '/transactions', params);
+        let params = this.axiosHandler._generateGetParams(
+            ["limit", "offset"],
+            [limit ? limit : null, offset]
+        );
+        let res = await this.axiosHandler.get(
+            "/addresses/" + address + "/transactions",
+            params
+        );
         return res.error ? res : res.transactionHashes;
     }
-
 }
-
-module.exports = IdxCaller;
