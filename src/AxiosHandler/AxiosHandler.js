@@ -1,17 +1,14 @@
-const axios = require('axios').default;
-
-
+import axios from "axios";
 
 /**
- * @class 
+ * @class
  * Handles all axios interactions
  */
-class IndexerAxiosHandler {
-
+export default class IndexerAxiosHandler {
     /**
-    * @typedef ResponseError
-    * @property {String} error - Error message
-    */
+     * @typedef ResponseError
+     * @property {String} error - Error message
+     */
 
     /**
      * @param {String} indexerUrl - The indexer api url to use
@@ -29,17 +26,19 @@ class IndexerAxiosHandler {
         if (typeof endpoint !== "string") {
             throw new Error("Endpoint must be a string");
         }
-        return endpoint[0] !== "/" ? this.endpointBaseURL + ("/" + endpoint) : this.endpointBaseURL + endpoint;
+        return endpoint[0] !== "/"
+            ? this.endpointBaseURL + ("/" + endpoint)
+            : this.endpointBaseURL + endpoint;
     }
 
     /**
      * Generate a response error
-     * @param {String} msg - message to use as an error 
-     * @returns 
+     * @param {String} msg - message to use as an error
+     * @returns
      */
     _generateResponseError(msg) {
         if (typeof msg !== "string") {
-            throw new Error("Response error must be a string")
+            throw new Error("Response error must be a string");
         }
         return { error: msg };
     }
@@ -57,7 +56,7 @@ class IndexerAxiosHandler {
             let value = values[i];
             // Only push params with values
             if (value) {
-                params.push([param, value])
+                params.push([param, value]);
             }
         }
         return params;
@@ -72,7 +71,11 @@ class IndexerAxiosHandler {
         if (parameters.length > 0) {
             for (let i = 0; i < parameters.length; i++) {
                 let parameterSet = parameters[i];
-                endpoint += (i === 0 ? "?" : "&") + parameterSet[0] + "=" + parameterSet[1];
+                endpoint +=
+                    (i === 0 ? "?" : "&") +
+                    parameterSet[0] +
+                    "=" +
+                    parameterSet[1];
             }
         }
         return endpoint;
@@ -80,24 +83,26 @@ class IndexerAxiosHandler {
 
     /**
      * @param {String} endpoint - The endpoint of the indexerURL to call
-     * @param {Array<Array<String>>} parameters - 2D Array of parameter:value pairs eg [[limit, 20], [offset, 1]] 
-     * @returns {any} - Data response from endpoint (response.data)  
+     * @param {Array<Array<String>>} parameters - 2D Array of parameter:value pairs eg [[limit, 20], [offset, 1]]
+     * @returns {any} - Data response from endpoint (response.data)
      */
     async get(endpoint, parameters = []) {
         // Format Endpoint and apply get parameters if applicable
-        let targetEndpoint = this._applyGetParamsToEndpoint(this._formatEndpoint(endpoint), parameters);
+        let targetEndpoint = this._applyGetParamsToEndpoint(
+            this._formatEndpoint(endpoint),
+            parameters
+        );
         try {
-            return await (await axios.get(targetEndpoint)).data;
+            return await (
+                await axios.get(targetEndpoint)
+            ).data;
         } catch (e) {
             if (e.response && e.response.data) {
-                return this._generateResponseError(e.response.data.message)
+                return this._generateResponseError(e.response.data.message);
             }
-            return this._generateResponseError(e.message)
+            return this._generateResponseError(e.message);
         }
     }
 
-    async post(endpoint, postOps) {}
-
+    // TODO: async post(endpoint, postOps) {}
 }
-
-module.exports = IndexerAxiosHandler;
