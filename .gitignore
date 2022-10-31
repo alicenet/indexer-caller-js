@@ -1,3 +1,6 @@
 dotenv
 node_modules/
 /.idea
+
+.eslintcache
+/lib
