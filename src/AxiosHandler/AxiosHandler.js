@@ -33,8 +33,8 @@ export default class IndexerAxiosHandler {
 
     /**
      * Generate a response error
-     * @param {String} msg - message to use as an error
-     * @returns
+     * @param {String} msg - message to use as an error 
+     * @returns {ResponseError}
      */
     _generateResponseError(msg) {
         if (typeof msg !== "string") {
