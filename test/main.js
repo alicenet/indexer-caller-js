@@ -99,38 +99,45 @@ describe("IdxCaller", function () {
             checkBlockObject(polledBlock);
         });
 
-        it("Should be able to get latest transactions", async () => {
-            const latestTxs = await idxCaller.getTransactions();
-            assert(latestTxs.length > 0, true);
-        });
-    
-        it("Should be able to get latest transactions for specific address", async () => {
-            const latestTxs = await idxCaller.getTransactionsForAddress(testAddress);
-            assert(latestTxs.length > 0, true);
-        });
-    
-        it("Should be able to get latest transactions for current block", async () => {
-            const currentBlock = await idxCaller.getCurrentBlock();
-            currentBlock.transactionHashes.forEach(async hash => {
-                const tx = await idxCaller.getTransactionByHash(hash);
-                assert(Boolean(tx?.transaction), true);
-            });
-        });
-    
-        it("Should be able to get transactions from a specific block", async () => {
-            const polledBlock = await idxCaller.getBlock(blockId);
-            polledBlock.transactionHashes.forEach(async hash => {
-                const tx = await idxCaller.getTransactionByHash(hash);
-                assert(Boolean(tx?.transaction), true);
-            });
-        });
-
     });
 
 });
 
     
+describe("Transaction Methods", function () {
 
+    let idxCaller;
+
+    beforeEach(function () {
+        idxCaller = new IdxCaller(testIdxEndpoint);
+    });
+
+    it("Should be able to get latest transactions", async () => {
+        const latestTxs = await idxCaller.getTransactions();
+        assert(latestTxs.length > 0, true);
+    });
+
+    it("Should be able to get latest transactions for specific address", async () => {
+        const latestTxs = await idxCaller.getTransactionsForAddress(testAddress);
+        assert(latestTxs.length > 0, true);
+    });
+
+    it("Should be able to get latest transactions for current block", async () => {
+        const currentBlock = await idxCaller.getCurrentBlock();
+        currentBlock.transactionHashes.forEach(async hash => {
+            const tx = await idxCaller.getTransactionByHash(hash);
+            assert(Boolean(tx?.transaction), true);
+        });
+    });
+
+    it("Should be able to get transactions from a specific block", async () => {
+        const polledBlock = await idxCaller.getBlock(blockId);
+        polledBlock.transactionHashes.forEach(async hash => {
+            const tx = await idxCaller.getTransactionByHash(hash);
+            assert(Boolean(tx?.transaction), true);
+        });
+    });
+});
 
 describe("Datastore Methods", function() {
 

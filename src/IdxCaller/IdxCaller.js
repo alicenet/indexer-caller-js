@@ -236,11 +236,11 @@ export default class IdxCaller {
     async getTransactionsForAddress(address, limit, offset) {
         this._paramCheck("number", "limit", limit);
         this._paramCheck("number", "offset", offset);
-        let params = this.axiosHandler._generateGetParams(
+        const params = this.axiosHandler._generateGetParams(
             ["limit", "offset"],
             [limit ? limit : null, offset]
         );
-        let res = await this.axiosHandler.get(
+        const res = await this.axiosHandler.get(
             "/addresses/" + address + "/transactions",
             params
         );
@@ -254,6 +254,7 @@ export default class IdxCaller {
      * @param {String} index - The index to get data stores for 
      */
         async getDataStoresForAddressAndIndex(address, index) {
-        return await this.axiosHandler.get('/addresses/' + address + '/stores/' + index);
+        const res = await this.axiosHandler.get('/addresses/' + address + '/stores/' + index);
+        return res.error ? res : res.value; 
     }
 }
