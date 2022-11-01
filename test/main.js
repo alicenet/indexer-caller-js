@@ -23,12 +23,12 @@ describe("IdxCaller", function () {
             checkIdxClassState(idxCaller);
         });
 
-        it('Should show expected class state when instanced w/ config object w/out version', function () {
+        it("Should show expected class state when instanced w/ config object w/out version", function () {
             const idxCallerObj1 = new IdxCaller({ indexerURL: testIdxEndpoint });
             checkIdxClassState(idxCallerObj1);
         });
 
-        it('Should show expected class state when instanced w/ config object w/ version', function () {
+        it("Should show expected class state when instanced w/ config object w/ version", function () {
             const idxCallerObj2 = new IdxCaller({ indexerURL: testIdxEndpoint, indexerVersion: 2 });
             checkIdxClassState(idxCallerObj2, "/v2");
         });
