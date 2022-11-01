@@ -122,7 +122,7 @@ export default class IdxCaller {
      * @returns {String} - The balance for the provided address
      */
     async getBalanceForAddress(address) {
-        let res = await this.axiosHandler.get(
+        const res = await this.axiosHandler.get(
             "/addresses/" + address + "/balance"
         );
         return res.error ? res : res.balance;
@@ -136,7 +136,7 @@ export default class IdxCaller {
      */
     async getBlock(blockHeight) {
         this._paramCheck("number", "blockHeight", blockHeight);
-        let res = await this.axiosHandler.get("/blocks/" + blockHeight);
+        const res = await this.axiosHandler.get("/blocks/" + blockHeight);
         return res.error ? res : res.block;
     }
 
@@ -150,11 +150,11 @@ export default class IdxCaller {
     async getBlockHeights(limit, offset) {
         this._paramCheck("number", "limit", limit);
         this._paramCheck("number", "offset", offset);
-        let params = this.axiosHandler._generateGetParams(
+        const params = this.axiosHandler._generateGetParams(
             ["limit", "offset"],
             [limit ? limit : null, offset]
         );
-        let res = await this.axiosHandler.get("/blocks", params);
+        const res = await this.axiosHandler.get("/blocks", params);
         return res.error ? res : res.heights;
     }
 
@@ -164,11 +164,11 @@ export default class IdxCaller {
      * @returns {BlockData} - The current block
      */
     async getCurrentBlock() {
-        let currentBlockHeight = await this.getCurrentBlockHeight();
+        const currentBlockHeight = await this.getCurrentBlockHeight();
         if (currentBlockHeight.error) {
             return currentBlockHeight;
         }
-        let res = await this.getBlock(currentBlockHeight);
+        const res = await this.getBlock(currentBlockHeight);
         return res.error ? res : res;
     }
 
@@ -178,7 +178,7 @@ export default class IdxCaller {
      * @returns {Number}
      */
     async getCurrentBlockHeight() {
-        let currentHeight = await this.getBlockHeights(1);
+        const currentHeight = await this.getBlockHeights(1);
         if (currentHeight.error) {
             return currentHeight;
         } else {
@@ -196,6 +196,16 @@ export default class IdxCaller {
     }
 
     /**
+     * Fetches data stores for the provided address and index
+     * @method
+     * @param {String} address - The address to get data stores for 
+     * @param {String} index - The index to get data stores for 
+     */
+     async getDataStoresForAddressAndIndex(address, index) {
+        return await this.axiosHandler.get("/addresses/" + address + "/stores/" + index);
+    }
+
+    /**
      * Get transactions from the indexer, ambiguous of any addresses
      * @method
      * @param { Number | Boolean } limit - Limit of transactions to fetch -- provide false for no limit
@@ -205,11 +215,11 @@ export default class IdxCaller {
     async getTransactions(limit, offset) {
         this._paramCheck("number", "limit", limit);
         this._paramCheck("number", "offset", offset);
-        let params = this.axiosHandler._generateGetParams(
+        const params = this.axiosHandler._generateGetParams(
             ["limit", "offset"],
             [limit ? limit : null, offset]
         );
-        let res = await this.axiosHandler.get("/transactions", params);
+        const res = await this.axiosHandler.get("/transactions", params);
         return res.error ? res : res.transactionHashes;
     }
 
@@ -221,8 +231,8 @@ export default class IdxCaller {
      */
     async getTransactionByHash(txHash) {
         this._paramCheck("string", "txHash", txHash, true);
-        let res = await this.axiosHandler.get("/transactions/" + txHash);
-        console.log(res);
+        const res = await this.axiosHandler.get("/transactions/" + txHash);
+        return res;
     }
 
     /**
@@ -236,14 +246,15 @@ export default class IdxCaller {
     async getTransactionsForAddress(address, limit, offset) {
         this._paramCheck("number", "limit", limit);
         this._paramCheck("number", "offset", offset);
-        let params = this.axiosHandler._generateGetParams(
+        const params = this.axiosHandler._generateGetParams(
             ["limit", "offset"],
             [limit ? limit : null, offset]
         );
-        let res = await this.axiosHandler.get(
+        const res = await this.axiosHandler.get(
             "/addresses/" + address + "/transactions",
             params
         );
         return res.error ? res : res.transactionHashes;
     }
+    
 }
