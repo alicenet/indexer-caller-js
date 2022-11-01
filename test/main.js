@@ -106,7 +106,6 @@ describe("IdxCaller", function () {
     
         it("Should be able to get latest transactions for specific address", async () => {
             const latestTxs = await idxCaller.getTransactionsForAddress(testAddress);
-            console.log('here it is aa ', latestTxs)
             assert(latestTxs.length > 0, true);
         });
     
@@ -143,13 +142,11 @@ describe("Datastore Methods", function() {
 
     it("Should be able to get datastores for an address", async () => {
         const datastores = await idxCaller.getDataStoresForAddress(testAddress);
-        console.log('here it is 1', datastores)
         assert(datastores.length > 0, true);
     });
     
     it("Should be able to get datastore by index for an address", async () => {
         const datastores = await idxCaller.getDataStoresForAddressAndIndex(testAddress, "1");
-        console.log('here it is 2', datastores)
         assert(datastores.length > 0, true);
     });
 
